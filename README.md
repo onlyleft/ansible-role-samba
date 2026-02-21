@@ -63,6 +63,7 @@ No specific requirements
 | `samba_server_string`          | `fileserver %m`          | Comment string for the server.                                                                                               |
 | `samba_shares_root`            | `/srv/shares`            | Directories for the shares are created under this directory.                                                                 |
 | `samba_shares`                 | []                       | List of dicts containing share definitions. See below for details.                                                           |
+| `samba_validate_explicit_paths`| false                    | When true, shares with explicit `path` fail if the path does not exist and is not a directory.                              |
 | `samba_users`                  | []                       | List of dicts defining users that can access shares.                                                                         |
 | `samba_wins_support`           | true                     | When true, Samba will act as a WINS server                                                                                   |
 | `samba_workgroup`              | `WORKGROUP`              | Name of the server workgroup.                                                                                                |

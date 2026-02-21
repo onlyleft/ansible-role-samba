@@ -57,6 +57,30 @@
   when: samba_shares|length > 0
   tags: samba
 
+- name: Validate explicit samba share paths exist
+  stat:
+    path: "{{ item.path }}"
+  register: samba_explicit_share_path_stats
+  loop: "{{ samba_shares | selectattr('path', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.name | default(item.path) }}"
+  when: samba_validate_explicit_paths | bool
+  tags: samba
+
+- name: Assert explicit samba share paths exist and are directories
+  assert:
+    that:
+      - item.stat.exists
+      - item.stat.isdir
+    fail_msg: >-
+      samba_shares entry '{{ item.item.name | default('unknown') }}' points to
+      path '{{ item.item.path }}' which does not exist or is not a directory.
+  loop: "{{ samba_explicit_share_path_stats.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item.name | default(item.item.path | default('unknown')) }}"
+  when: samba_validate_explicit_paths | bool
+  tags: samba
+
 - name: Create share directories
   with_items: "{{ samba_shares }}"
   file:
